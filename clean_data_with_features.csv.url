@@ -1,0 +1,220 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Business analysis 
+
+# PowerCo is experiencing a higher than expected rate of customer churn.
+# Our objective is to identify the key factors influencing customers' decisions to switch energy providers and to develop strategies to reduce churn.
+
+df = pd.read_csv(r'C:\Users\HP\Downloads\client_data (1).csv')
+df.head()
+
+df
+
+# [Here's what each term typically means in the context of a dataset related to sales and consumption data:
+
+# 1. **id**: A unique identifier for each record in the dataset.
+
+# 2. **channel_sales**: The sales channel through which the product or service was sold (e.g., online, in-store).
+
+# 3. **cons_12m**: Consumption over the last 12 months.
+
+# 4. **cons_gas_12m**: Gas consumption over the last 12 months.
+
+# 5. **cons_last_month**: Consumption in the last month.
+
+# 6. **date_activ**: The activation date of the service or product.
+
+# 7. **date_end**: The end date of the service or product (e.g., contract end date).
+
+# 8. **date_modif_prod**: The date when the product or service was last modified.
+
+# 9. **date_renewal**: The date when the service or product is due for renewal.
+
+# 10. **forecast_cons_12m**: Forecasted consumption for the next 12 months.
+
+# 11. **has_gas**: Indicates whether the customer has a gas connection (typically a binary value: 0 for no, 1 for yes).
+
+# 12. **imp_cons**: Important or impactful consumption value (specific meaning can vary based on the context, such as imported consumption data).
+
+# 13. **margin_gross_pow_ele**: Gross margin for electric power sales.
+
+# 14. **margin_net_pow_ele**: Net margin for electric power sales.
+
+# 15. **nb_prod_act**: Number of active products or services the customer is using.
+
+# 16. **net_margin**: Net margin, which is the profit margin after all expenses have been deducted.
+
+# 17. **num_years_antig**: Number of years of customer antiquity (i.e., how long the customer has been with the company).
+
+# 18. **origin_up**: The origin of the data or the source from which the data was updated.
+
+# 19. **pow_max**: Maximum power consumption or capacity.
+
+# 20. **churn**: Indicates whether the customer has churned (i.e., stopped using the service), typically a binary value (0 for no, 1 for yes).]
+
+df.info()
+
+df.unstack
+
+df.isnull().sum()
+
+df['id'].unique()
+
+df['channel_sales'].unique()
+
+df['cons_12m'].unique()
+
+df['cons_gas_12m'].unique()
+
+for column in df.columns:
+    unique_values = df[column].unique()
+    print(f"Unique values in column '{column}': {unique_values}")
+
+df.dtypes
+
+df.shape
+
+df.describe()
+
+df.tail()
+
+for column in df.columns:
+    plt.figure(figsize=(10, 6))
+
+for column in df.columns:
+    plt.figure(figsize=(10 , 5))
+    if pd.api.types.is_numeric_dtype(df[column]):
+        sns.histplot(df[column], kde=True)
+        plt.title(f'Histogram for {column}')
+        plt.xlabel(column)
+        plt.ylabel('Frequency')
+        plt.tight_layout()
+        plt.show()
+    else:
+        print(f"Column '{column}' is not numeric and cannot be plotted as a histogram.")
+
+columns_to_drop = ['date_activ', 'date_end', 'date_modif_prod', 'date_renewal', 'has_gas', 'origin_up']
+df1 = df.drop(columns=columns_to_drop)
+df1.head()
+
+
+for column in df1.columns:
+    plt.figure(figsize=(10 , 5))
+    if pd.api.types.is_numeric_dtype(df1[column]):
+        sns.histplot(df1[column], kde=True)
+        plt.title(f'Histogram for {column}')
+        plt.xlabel(column)
+        plt.ylabel('Frequency')
+        plt.tight_layout()
+        plt.show()
+    else:
+        print(f"Column '{column}' is not numeric and cannot be plotted as a histogram.")
+
+# Plot histogram for consumption over the past 12 months
+plt.figure(figsize=(10, 6))
+sns.histplot(df1['cons_12m'], kde=True)
+plt.title('Distribution of Consumption over the Past 12 Months')
+plt.xlabel('Consumption (12m)')
+plt.ylabel('Frequency')
+plt.show()
+
+
+# Plot histogram for forecasted consumption for the next 12 months
+plt.figure(figsize=(10, 6))
+sns.histplot(df1['forecast_cons_12m'], kde=True)
+plt.title('Distribution of Forecasted Consumption for the Next 12 Months')
+plt.xlabel('Forecasted Consumption (12m)')
+plt.ylabel('Frequency')
+plt.show()
+
+
+# Scatter plot between consumption and forecasted consumption
+plt.figure(figsize=(10, 6))
+sns.scatterplot(x='cons_12m', y='forecast_cons_12m', data = df1)
+plt.title('Consumption vs Forecasted Consumption')
+plt.xlabel('Consumption (12m)')
+plt.ylabel('Forecasted Consumption (12m)')
+plt.show()
+
+
+# Select only the numeric columns
+numeric_cols = df1.select_dtypes(include=['number']).columns
+
+# Compute the correlation matrix
+corr = df1[numeric_cols].corr()
+
+# Generate a heatmap
+plt.figure(figsize=(12, 8))
+sns.heatmap(corr, annot=True, cmap='coolwarm', linewidths=0.5)
+plt.title('Correlation Heatmap')
+plt.show()
+
+
+
+
+
+df2 = pd.read_csv(r'C:\Users\HP\Downloads\price_data (1).csv')
+df2
+
+df2.info()
+
+df.describe()
+
+# 1.cons_12m: Consumption over the past 12 months.
+# 2.cons_gas_12m: Gas consumption over the past 12 months.
+# 3.cons_last_month: Consumption in the last month.
+# 4.forecast_cons_12m: Forecasted consumption for the next 12 months.
+# 5.forecast_cons_year: Forecasted consumption for the next year.
+# 6.forecast_discount_energy: Forecasted discount on energy.
+# 7.forecast_meter_rent_12m: Forecasted meter rent for the next 12 months.
+# 8.forecast_price_energy_off_peak: Forecasted energy price during off-peak hours.
+# 9.forecast_price_energy_peak: Forecasted energy price during peak hours.
+# 10.forecast_price_pow_off_peak: Forecasted price of power during off-peak hours.
+# 11.imp_cons: Imported consumption.
+# 12.margin_gross_pow_ele: Gross margin for electrical power.
+# 13.margin_net_pow_ele: Net margin for electrical power.
+# 14.nb_prod_act: Number of active products.
+# 15.net_margin: Net margin.
+# 16.num_years_antig: Number of years of antiquity (probably referring to the duration of the contract or relationship).
+# 17.pow_max: Maximum power.
+# 18.churn: Churn rate, which refers to the percentage of customers who stop using the service over a given period.
+
+for column in df2.columns:
+    unique_values = df2[column].unique()
+    print(f"Unique values in column '{column}': {unique_values}")
+
+df2.isnull().sum()
+
+for column in df2.columns:
+    plt.figure(figsize=(10 , 5))
+    if pd.api.types.is_numeric_dtype(df2[column]):
+        sns.histplot(df2[column], kde=True)
+        plt.title(f'Histogram for {column}')
+        plt.xlabel(column)
+        plt.ylabel('Frequency')
+        plt.tight_layout()
+        plt.show()
+    else:
+        print(f"Column '{column}' is not numeric and cannot be plotted as a histogram.")
+
+# Select only the numeric columns
+numeric_cols = df2.select_dtypes(include=['number']).columns
+
+# Compute the correlation matrix
+corr = df2[numeric_cols].corr()
+
+# Generate a heatmap
+plt.figure(figsize=(10, 5))
+sns.heatmap(corr, annot=True, cmap='coolwarm', linewidths=0.5)
+plt.title('Correlation Heatmap')
+plt.show()
+
+# Save the DataFrame to a CSV file
+df1.to_csv('client_data_saved.csv', index=False)
+df2.to_csv('prise_data_saved.csv', index=False)
+
+
+
